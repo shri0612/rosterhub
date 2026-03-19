@@ -147,3 +147,6 @@ EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", "")
 
 EMAIL_FROM_NAME = os.getenv("EMAIL_FROM_NAME", "RosterHub")
 DEFAULT_FROM_EMAIL = f"{EMAIL_FROM_NAME} <{EMAIL_HOST_USER}>" if EMAIL_HOST_USER else "RosterHub <no-reply@example.com>"
+STATIC_URL = '/static/'
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
