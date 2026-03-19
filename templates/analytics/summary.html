@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block title %}Analytics Summary | RosterHub{% endblock %}
+{% block page_title %}Analytics{% endblock %}
+
+{% block content %}
+  {% if not roster %}
+    <div class="card">
+      <div class="card-title">Analytics Summary</div>
+      <p>No roster found yet. Create a weekly roster first.</p>
+      <a href="{% url 'roster:week_select' %}" class="btn btn-primary">Create / Open Weekly Roster</a>
+    </div>
+  {% else %}
+    <div class="card">
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;">
+        <div>
+          <div class="card-title" style="margin-bottom:4px;">Workforce Analytics & Compliance</div>
+          <div style="font-size:14px; color:#6b7280;">
+            Week: <strong>{{ roster.week_start_date|date:"F j, Y" }}</strong> to <strong>{{ roster.week_end_date|date:"F j, Y" }}</strong>
+            &nbsp;|&nbsp;
+            Status: <strong>{{ roster.get_status_display }}</strong>
+          </div>
+          <div style="font-size:12px; color:#6b7280; margin-top:6px;">
+            Analytics Source: <strong>Friend's Workforce API (EC2-hosted)</strong>
+          </div>
+        </div>
+
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <a href="{% url 'roster:week_summary' %}" class="btn btn-secondary">Shift Summary</a>
+          <a href="{% url 'payroll:summary' %}" class="btn btn-secondary">Payroll</a>
+          <a href="{% url 'analytics:run_roster' roster.id %}" class="btn btn-primary">Run Analytics</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:16px;">
+      <div class="card-title">Compliance & Risk Table</div>
+
+      <div class="table-scroll">
+        <table class="table">
+          <thead>
+            <tr>
+              <th style="min-width:220px;">Employee</th>
+              <th style="min-width:100px;">Total Hrs</th>
+              <th style="min-width:100px;">OT Hrs</th>
+              <th style="min-width:120px;">Risk Level</th>
+              <th style="min-width:130px;">Compliance</th>
+              <th style="min-width:120px;">Estimated Pay</th>
+              <th style="min-width:130px;">Public Holidays</th>
+              <th style="min-width:260px;">Recommendation</th>
+              <th style="min-width:150px;">Status</th>
+              <th style="min-width:180px;">Job ID</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for a in analytics_rows %}
+              <tr>
+                <td>
+                  <strong>{{ a.employee.name }}</strong><br>
+                  <span style="font-size:12px; color:#6b7280;">{{ a.employee.email }}</span>
+                </td>
+                <td>{{ a.total_hours }}</td>
+                <td>{{ a.overtime_hours }}</td>
+
+                <td>
+                  {% if a.risk_level == "LOW" %}
+                    <span class="badge-pill badge-risk-low">LOW</span>
+                  {% elif a.risk_level == "MEDIUM" %}
+                    <span class="badge-pill badge-risk-medium">MEDIUM</span>
+                  {% elif a.risk_level == "HIGH" %}
+                    <span class="badge-pill badge-risk-high">HIGH</span>
+                  {% else %}
+                    -
+                  {% endif %}
+                </td>
+
+                <td>
+                  {% if a.compliance_status == "OK" %}
+                    <span class="badge-pill badge-compliance-ok">OK</span>
+                  {% elif a.compliance_status == "WARNING" %}
+                    <span class="badge-pill badge-compliance-warning">WARNING</span>
+                  {% elif a.compliance_status == "VIOLATION" %}
+                    <span class="badge-pill badge-compliance-violation">VIOLATION</span>
+                  {% else %}
+                    -
+                  {% endif %}
+                </td>
+
+                <td>{{ a.estimated_pay }}</td>
+                <td>{{ a.public_holidays_in_week }}</td>
+
+                <td style="font-size:12px; max-width:260px;">
+                  {{ a.recommendation|default:"-" }}
+                </td>
+
+                <td>
+                  <span class="status-pill {% if a.api_status == 'success' %}active{% else %}inactive{% endif %}">
+                    {{ a.get_api_status_display }}
+                  </span>
+                  {% if a.error_message %}
+                    <div style="font-size:11px; color:#991b1b; margin-top:4px;" title="{{ a.error_message }}">
+                      {{ a.error_message|truncatechars:80 }}
+                    </div>
+                  {% endif %}
+                </td>
+
+                <td style="font-size:11px;">{{ a.job_id|default:"-" }}</td>
+              </tr>
+            {% empty %}
+              <tr>
+                <td colspan="10">No analytics data found. Click <strong>Run Analytics</strong>.</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  {% endif %}
+{% endblock %}

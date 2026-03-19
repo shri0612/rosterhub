@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard | RosterHub{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+  <div class="cards">
+    <div class="card">
+      <div class="card-title">Total Employees</div>
+      <div class="card-value">{{ total_employees }}</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Employees Scheduled (This Week)</div>
+      <div class="card-value">{{ employees_scheduled }}</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Total Weekly Hours (All)</div>
+      <div class="card-value">{{ total_weekly_hours|default:0|floatformat:2 }}</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Estimated Total Payroll</div>
+      <div class="card-value">{{ total_payroll }}</div>
+    </div>
+  </div>
+
+  <div style="margin-top:16px;" class="card">
+    <div class="card-title">Next Actions</div>
+    <div>
+      <a href="{% url 'employees:list' %}">➕ Manage Employees</a> |
+      <a href="{% url 'roster:week_select' %}">📅 Create Weekly Roster</a>
+    </div>
+  </div>
+{% endblock %}

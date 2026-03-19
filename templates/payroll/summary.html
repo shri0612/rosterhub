@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block title %}Payroll Summary | RosterHub{% endblock %}
+{% block page_title %}Payroll{% endblock %}
+
+{% block content %}
+  {% if not roster %}
+    <div class="card">
+      <div class="card-title">Payroll Summary</div>
+      <p>No roster found yet. Create a weekly roster first.</p>
+      <a href="{% url 'roster:week_select' %}" class="btn btn-primary">Create / Open Weekly Roster</a>
+    </div>
+  {% else %}
+    <div class="card">
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;">
+        <div>
+          <div class="card-title" style="margin-bottom:4px;">Payroll Summary</div>
+          <div style="font-size:14px; color:#6b7280;">
+            Week: <strong>{{ roster.week_start_date|date:"F j, Y" }}</strong> to <strong>{{ roster.week_end_date|date:"F j, Y" }}</strong>
+            &nbsp;|&nbsp;
+            Status: <strong>{{ roster.get_status_display }}</strong>
+          </div>
+          <div style="font-size:12px; color:#6b7280; margin-top:6px;">
+            Payroll Source: <strong>AWS Lambda API (via API Gateway)</strong>
+          </div>
+        </div>
+
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <a href="{% url 'roster:week_summary' %}" class="btn btn-secondary">Shift Summary</a>
+          <a href="{% url 'analytics:summary' %}" class="btn btn-secondary">Analytics</a>
+          <a href="{% url 'payroll:calculate_roster' roster.id %}?next={% url 'payroll:summary' %}" class="btn btn-primary">Calculate Payroll</a> 
+        </div>
+      </div>
+    </div>
+
+    <div class="cards" style="margin-top:16px;">
+      <div class="card">
+        <div class="card-title">Employees</div>
+        <div class="card-value">{{ payroll_rows|length }}</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Total Hours</div>
+        <div class="card-value">{{ totals.total_hours|default:0|floatformat:2 }}</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Total Overtime Pay</div>
+        <div class="card-value">€{{ totals.total_overtime_pay|default:0|floatformat:2 }}</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Total Gross Pay</div>
+        <div class="card-value">€{{ totals.total_gross_pay|default:0|floatformat:2 }}</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:16px;">
+      <div class="card-title">Employee Payroll Table</div>
+
+      <div class="table-scroll">
+        <table class="table">
+          <thead>
+            <tr>
+              <th style="min-width:220px;">Employee</th>
+              <th style="min-width:100px;">Rate</th>
+              <th style="min-width:100px;">Total Hrs</th>
+              <th style="min-width:100px;">Std Hrs</th>
+              <th style="min-width:100px;">OT Hrs</th>
+              <th style="min-width:120px;">Std Pay (€)</th>
+              <th style="min-width:120px;">OT Pay (€)</th>
+              <th style="min-width:130px;">Gross Pay (€)</th>
+              <th style="min-width:120px;">Status</th>
+              <th style="min-width:150px;">Calculated At</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for p in payroll_rows %}
+              <tr>
+                <td>
+                  <strong>{{ p.employee.name }}</strong><br>
+                  <span style="font-size:12px; color:#6b7280;">{{ p.employee.email }}</span>
+                </td>
+                <td>{{ p.hourly_rate }}</td>
+                <td>{{ p.total_hours }}</td>
+                <td>{{ p.standard_hours }}</td>
+                <td>{{ p.overtime_hours }}</td>
+                <td>{{ p.standard_pay }}</td>
+                <td>{{ p.overtime_pay }}</td>
+                <td><strong>{{ p.gross_pay }}</strong></td>
+                <td>
+                  <span class="status-pill {% if p.calculation_status == 'success' %}active{% else %}inactive{% endif %}">
+                    {{ p.get_calculation_status_display }}
+                  </span>
+                  {% if p.error_message %}
+                    <div style="font-size:11px; color:#991b1b; margin-top:4px;" title="{{ p.error_message }}">
+                      {{ p.error_message|truncatechars:70 }}
+                    </div>
+                  {% endif %}
+                </td>
+                <td style="font-size:12px;">{{ p.calculated_at|date:"Y-m-d H:i" }}</td>
+              </tr>
+            {% empty %}
+              <tr>
+                <td colspan="10">No payroll data found. Click <strong>Calculate Payroll</strong>.</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  {% endif %}
+{% endblock %}

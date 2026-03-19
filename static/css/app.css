@@ -1,0 +1,458 @@
+* { box-sizing: border-box; }
+body { margin: 0; font-family: Arial, sans-serif; background: #f5f7fb; color: #1f2937; }
+
+.layout { display: flex; min-height: 100vh; }
+
+.sidebar {
+  width: 260px;
+  background: #111827;
+  color: #fff;
+  padding: 20px;
+}
+
+.brand { margin-bottom: 24px; }
+.brand-title { font-size: 20px; font-weight: 700; }
+.brand-subtitle { font-size: 12px; opacity: 0.7; margin-top: 6px; }
+
+.nav { display: flex; flex-direction: column; gap: 10px; }
+.nav-link {
+  color: #e5e7eb;
+  text-decoration: none;
+  padding: 10px 12px;
+  border-radius: 8px;
+}
+.nav-link:hover { background: rgba(255,255,255,0.08); }
+
+.content { flex: 1; padding: 18px; }
+.topbar {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 16px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+.page-title { margin: 0; font-size: 18px; }
+.badge {
+  background: #111827;
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+}
+
+.page { margin-top: 16px; }
+
+.cards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+.card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 14px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+.card-title { font-size: 12px; color: #6b7280; margin-bottom: 8px; }
+.card-value { font-size: 24px; font-weight: 800; }
+
+@media (max-width: 1100px) {
+  .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .sidebar { width: 220px; }
+}
+@media (max-width: 700px) {
+  .cards { grid-template-columns: 1fr; }
+  .sidebar { display: none; }
+}
+
+/* Buttons */
+.btn {
+  display: inline-block;
+  text-decoration: none;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 14px;
+}
+.btn-primary { background: #111827; color: #fff; }
+.btn-secondary { background: #e5e7eb; color: #111827; }
+.btn-danger { background: #dc2626; color: #fff; }
+
+/* Table */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+}
+.table th, .table td {
+  text-align: left;
+  padding: 10px 8px;
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 14px;
+}
+.table th {
+  color: #6b7280;
+  font-weight: 600;
+  background: #f9fafb;
+}
+
+/* Status pills */
+.status-pill {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.status-pill.active {
+  background: #dcfce7;
+  color: #166534;
+}
+.status-pill.inactive {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+/* Forms */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 13px;
+  color: #374151;
+  font-weight: 600;
+}
+.form-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  outline: none;
+  font-size: 14px;
+  background: #fff;
+}
+.form-input:focus {
+  border-color: #111827;
+}
+.form-checkbox {
+  transform: scale(1.1);
+}
+.form-group-inline {
+  display: flex;
+  align-items: center;
+}
+
+.field-error {
+  margin-top: 4px;
+  color: #b91c1c;
+  font-size: 12px;
+}
+
+/* Messages */
+.messages {
+  margin-bottom: 12px;
+}
+.alert {
+  padding: 10px 12px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+.alert-success {
+  background: #dcfce7;
+  color: #166534;
+}
+.alert-error {
+  background: #fee2e2;
+  color: #991b1b;
+}
+.alert-warning {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+/* Responsive form */
+@media (max-width: 900px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+/* Roster table cells */
+.table-roster td, .table-roster th {
+  vertical-align: top;
+}
+
+.roster-input {
+  font-size: 12px;
+  padding: 6px 8px;
+}
+
+.cell-field {
+  margin-bottom: 6px;
+}
+
+.cell-field label {
+  display: block;
+  font-size: 11px;
+  color: #6b7280;
+  margin-bottom: 3px;
+}
+/* Scroll only inside roster assignment table area */
+.roster-table-scroll {
+  max-height: 520px;      /* adjust as needed */
+  overflow: auto;         /* both horizontal + vertical scroll */
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background: #fff;
+}
+
+/* Keep table header visible while scrolling vertically (nice UX) */
+.table-roster thead th {
+  position: sticky;
+  top: 0;
+  background: #f9fafb;
+  z-index: 2;
+}
+
+/* Keep first column (employee) visible while horizontal scroll (optional but great UX) */
+.table-roster th:first-child,
+.table-roster td:first-child {
+  position: sticky;
+  left: 0;
+  background: #fff;
+  z-index: 1;
+}
+
+.table-roster thead th:first-child {
+  z-index: 3; /* above other sticky cells */
+  background: #f9fafb;
+}
+/* =========================
+   APP LAYOUT SCROLL FIX
+   ========================= */
+html, body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden; /* prevent browser page from scrolling everywhere */
+}
+
+.layout {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.sidebar {
+  width: 260px;
+  height: 100vh;
+  overflow-y: auto;
+  flex-shrink: 0;
+}
+
+.content {
+  flex: 1;
+  height: 100vh;
+  overflow-y: auto;   /* only main content scrolls vertically */
+  overflow-x: hidden; /* prevent page-wide horizontal scroll */
+  padding: 18px;
+}
+
+/* Generic scroll wrapper for wide/tall tables */
+.table-scroll {
+  width: 100%;
+  max-height: 65vh;
+  overflow: auto;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background: #fff;
+}
+
+/* Sticky header for all tables inside table-scroll */
+.table-scroll .table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: #f9fafb;
+}
+
+/* Optional sticky first column (very useful for roster/payroll/analytics) */
+.table-scroll .table th:first-child,
+.table-scroll .table td:first-child {
+  position: sticky;
+  left: 0;
+  background: #fff;
+  z-index: 1;
+}
+
+.table-scroll .table thead th:first-child {
+  z-index: 3;
+  background: #f9fafb;
+}
+/* Active sidebar link */
+.nav-link.active {
+  background: rgba(255,255,255,0.12);
+  color: #ffffff;
+  font-weight: 600;
+  border-left: 3px solid #ffffff;
+  padding-left: 9px;
+}
+/* Sticky action bar at bottom of visible content area */
+.sticky-action-bar {
+  /*position: fixed;*/
+  bottom: 0;
+  z-index: 10;
+  background: rgba(245, 247, 251, 0.95);
+  backdrop-filter: blur(4px);
+  border-top: 1px solid #e5e7eb;
+  padding: 12px 0;
+  margin-top: 12px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+/* Generic badges */
+.badge-pill {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* Risk badges */
+.badge-risk-low {
+  background: #dcfce7;
+  color: #166534;
+}
+.badge-risk-medium {
+  background: #fef3c7;
+  color: #92400e;
+}
+.badge-risk-high {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+/* Compliance badges */
+.badge-compliance-ok {
+  background: #dcfce7;
+  color: #166534;
+}
+.badge-compliance-warning {
+  background: #fef3c7;
+  color: #92400e;
+}
+.badge-compliance-violation {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+/* Prevent full page scrolling */
+html, body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+.layout {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.sidebar {
+  width: 260px;
+  height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex-shrink: 0;
+}
+
+.content {
+  flex: 1;
+  height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden; /* important */
+  padding: 18px;
+  min-width: 0; /* very important for flex overflow issues */
+}
+
+.page {
+  min-width: 0; /* prevents content from forcing layout wider */
+}
+
+/* Table scroll only inside wrapper */
+.table-scroll {
+  width: 100%;
+  max-width: 100%;
+  max-height: 65vh;
+  overflow: auto;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background: #fff;
+}
+
+/* Table should size to content, but stay inside scroll wrapper */
+.table-scroll .table {
+  width: max-content;
+  min-width: 100%;
+  border-collapse: collapse;
+}
+
+/* Sticky header */
+.table-scroll .table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: #f9fafb;
+}
+
+/* Sticky first column */
+.table-scroll .table th:first-child,
+.table-scroll .table td:first-child {
+  position: sticky;
+  left: 0;
+  background: #fff;
+  z-index: 1;
+}
+
+.table-scroll .table thead th:first-child {
+  z-index: 3;
+  background: #f9fafb;
+}
+.badge-pill {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.badge-risk-low {
+  background: #dcfce7;
+  color: #166534;
+}
+.badge-risk-medium {
+  background: #fef3c7;
+  color: #92400e;
+}
+.badge-risk-high {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.badge-compliance-ok {
+  background: #dcfce7;
+  color: #166534;
+}
+.badge-compliance-warning {
+  background: #fef3c7;
+  color: #92400e;
+}
+.badge-compliance-violation {
+  background: #fee2e2;
+  color: #991b1b;
+}

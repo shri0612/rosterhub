@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}RosterHub{% endblock %}</title>
+
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/app.css' %}">
+</head>
+<body>
+  <div class="layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-title">RosterHub</div>
+        <div class="brand-subtitle">Manager Console</div>
+      </div>
+
+      <nav class="nav">
+        <!--<a class="nav-link" href="{% url 'dashboard:home' %}">Dashboard</a>-->
+        <a class="nav-link {% if request.path == '/' %}active{% endif %}" href="{% url 'dashboard:home' %}">Dashboard</a>
+        <a class="nav-link {% if request.path|slice:':10' == '/employees/' %}active{% endif %}" href="{% url 'employees:list' %}">Employees</a>
+        <!--<a class="nav-link {% if request.path|slice:':8' == '/roster/' %}active{% endif %}" href="{% url 'roster:week_select' %}">Shift Assignment</a>-->
+        <!--<a class="nav-link {% if request.path == '/roster/week-summary/' %}active{% endif %}" href="{% url 'roster:week_summary' %}">Shift Summary</a>-->
+        <a class="nav-link {% if request.path == '/roster/week-select/' or '/roster/assign/' in request.path %}active{% endif %}"href="{% url 'roster:week_select' %}">Shift Assignment</a>
+        <a class="nav-link {% if request.path == '/roster/week-summary/' %}active{% endif %}"href="{% url 'roster:week_summary' %}">Shift Summary</a>
+        <a class="nav-link {% if request.path|slice:':9' == '/payroll/' %}active{% endif %}" href="{% url 'payroll:summary' %}">Payroll</a>
+        <a class="nav-link {% if request.path|slice:':11' == '/analytics/' %}active{% endif %}" href="{% url 'analytics:summary' %}">Analytics</a>
+        <!--<a class="nav-link {% if request.path|slice:':15' == '/notifications/' %}active{% endif %}" href="#">Notifications</a>-->
+      </nav>
+    </aside>
+
+    <!-- Main content -->
+    <main class="content">
+      <header class="topbar">
+        <div class="topbar-left">
+          <h1 class="page-title">{% block page_title %}Dashboard{% endblock %}</h1>
+        </div>
+        <div class="topbar-right">
+          <span class="badge">Cloud9 Dev</span>
+        </div>
+      </header>
+
+      <section class="page">
+  {% if messages %}
+    <div class="messages">
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  {% block content %}{% endblock %}
+</section>
+    </main>
+  </div>
+</body>
+</html>

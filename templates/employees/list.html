@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}Employees | RosterHub{% endblock %}
+{% block page_title %}Employees{% endblock %}
+
+{% block content %}
+  <div class="card">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+      <div class="card-title" style="margin:0;">Employee Management</div>
+      <a class="btn btn-primary" href="{% url 'employees:add' %}">+ Add Employee</a>
+    </div>
+
+    {% if employees %}
+      <div style="overflow-x:auto;">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Hourly Rate</th>
+              <th>Age</th>
+              <th>Department</th>
+              <th>Employment Type</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for emp in employees %}
+              <tr>
+                <td>{{ emp.id }}</td>
+                <td>{{ emp.name }}</td>
+                <td>{{ emp.email }}</td>
+                <td>{{ emp.hourly_rate }}</td>
+                <td>{{ emp.age }}</td>
+                <td>{{ emp.department|default:"-" }}</td>
+                <td>{{ emp.get_employment_type_display }}</td>
+                <td>
+                  {% if emp.is_active %}
+                    <span class="status-pill active">Active</span>
+                  {% else %}
+                    <span class="status-pill inactive">Inactive</span>
+                  {% endif %}
+                </td>
+                <td>
+                  <a href="{% url 'employees:edit' emp.id %}">Edit</a> |
+                  <a href="{% url 'employees:delete' emp.id %}">Delete</a>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p>No employees found. Click <strong>Add Employee</strong> to create your first record.</p>
+    {% endif %}
+  </div>
+{% endblock %}

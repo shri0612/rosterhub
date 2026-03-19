@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Shift Assignment | RosterHub{% endblock %}
+{% block page_title %}Shift Assignment - Select Week{% endblock %}
+
+{% block content %}
+  <div class="card" style="max-width: 700px;">
+    <div class="card-title">Create / Open Weekly Roster</div>
+    <p style="margin-top:0; color:#6b7280;">
+      Select a <strong>Monday</strong> date. RosterHub will create a new draft roster or open the existing one.
+    </p>
+
+    <form method="post" style="margin-top:16px;">
+      {% csrf_token %}
+
+      {% if form.errors %}
+        <div class="alert alert-error" style="margin-bottom:12px;">
+          Please fix the errors below.
+        </div>
+      {% endif %}
+
+      <div class="form-group">
+        <label>{{ form.week_start_date.label }}</label>
+        {{ form.week_start_date }}
+        {% if form.week_start_date.errors %}
+          <div class="field-error">{{ form.week_start_date.errors|striptags }}</div>
+        {% endif %}
+      </div>
+
+      <div style="margin-top:16px; display:flex; gap:10px;">
+        <button type="submit" class="btn btn-primary">Create / Open Roster</button>
+        <a href="{% url 'dashboard:home' %}" class="btn btn-secondary">Back to Dashboard</a>
+      </div>
+    </form>
+  </div>
+{% endblock %}

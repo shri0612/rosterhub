@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}Delete Employee | RosterHub{% endblock %}
+{% block page_title %}Delete Employee{% endblock %}
+
+{% block content %}
+  <div class="card" style="max-width: 700px;">
+    <div class="card-title">Delete Confirmation</div>
+    <p>
+      Are you sure you want to delete employee:
+      <strong>{{ employee.name }}</strong> ({{ employee.email }})?
+    </p>
+
+    <form method="post" style="margin-top:16px;">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-danger">Yes, Delete</button>
+      <a href="{% url 'employees:list' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+  </div>
+{% endblock %}

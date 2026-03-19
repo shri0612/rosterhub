@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+{% load roster_extras %}
+
+
+
+{% block title %}Assign Shifts | RosterHub{% endblock %}
+{% block page_title %}Assign Shifts{% endblock %}
+
+{% block content %}
+  <div class="card">
+    <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;">
+      <div>
+        <div class="card-title" style="margin-bottom:4px;">Weekly Roster Assignment</div>
+        <div style="font-size:14px; color:#6b7280;">
+          Week: <strong>{{ roster.week_start_date|date:"F j, Y" }}</strong> to <strong>{{ roster.week_end_date|date:"F j, Y" }}</strong>
+          &nbsp;|&nbsp;
+          Status: <strong>{{ roster.get_status_display }}</strong>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:8px; flex-wrap:wrap;">
+        <a href="{% url 'roster:week_select' %}" class="btn btn-secondary">Select Another Week</a>
+      </div>
+    </div>
+  </div>
+
+  <form method="post">
+    {% csrf_token %}
+
+    <div class="card" style="margin-top:16px;">
+      <div class="card-title">Employees Shift Assignment (Mon–Sun)</div>
+
+      {% if employees %}
+        <div class="table-scroll">
+          <table class="table table-roster">
+            <thead>
+              <tr>
+                <th style="min-width:220px;">Employee</th>
+                {% for day in week_days %}
+                  <th style="min-width:230px;">
+                    {{ day|date:"D" }}<br>
+                    <span style="font-weight:400; color:#6b7280;">{{ day|date:"Y-m-d" }}</span>
+                  </th>
+                {% endfor %}
+              </tr>
+            </thead>
+            <tbody>
+  {% for emp in employees %}
+    <tr>
+      <td style="vertical-align:top;">
+        <strong>{{ emp.name }}</strong><br>
+        <span style="font-size:12px; color:#6b7280;">{{ emp.email }}</span><br>
+        <span style="font-size:12px; color:#6b7280;">€{{ emp.hourly_rate }}/hr</span>
+      </td>
+
+      {% for day in week_days %}
+        {% with day_str=day|date:"Y-m-d" %}
+          {% with cell_key=emp.id|stringformat:"s"|add:"|"|add:day_str %}
+            {% with shift=shift_lookup_string_keys|get_item:cell_key %}
+              <td style="vertical-align:top;">
+                <div class="cell-field">
+                  <label>Status</label>
+                  <select name="status_{{ emp.id }}_{{ day_str }}" class="form-input roster-input">
+                    <option value="assigned" {% if shift and shift.shift_status == "assigned" %}selected{% endif %}>Assigned</option>
+                    <option value="off" {% if not shift or shift.shift_status == "off" %}selected{% endif %}>Off</option>
+                    <option value="leave" {% if shift and shift.shift_status == "leave" %}selected{% endif %}>Leave</option>
+                    <option value="holiday" {% if shift and shift.shift_status == "holiday" %}selected{% endif %}>Holiday</option>
+                  </select>
+                </div>
+
+                <div class="cell-field">
+                  <label>Start</label>
+                  <input
+                    type="time"
+                    name="start_{{ emp.id }}_{{ day_str }}"
+                    class="form-input roster-input"
+                    value="{% if shift and shift.start_time %}{{ shift.start_time|time:'H:i' }}{% endif %}"
+                  >
+                </div>
+
+                <div class="cell-field">
+                  <label>End</label>
+                  <input
+                    type="time"
+                    name="end_{{ emp.id }}_{{ day_str }}"
+                    class="form-input roster-input"
+                    value="{% if shift and shift.end_time %}{{ shift.end_time|time:'H:i' }}{% endif %}"
+                  >
+                </div>
+
+                <div class="cell-field">
+                  <label>Break (min)</label>
+                  <input
+                    type="number"
+                    min="0"
+                    name="break_{{ emp.id }}_{{ day_str }}"
+                    class="form-input roster-input"
+                    value="{% if shift %}{{ shift.break_minutes }}{% else %}0{% endif %}"
+                  >
+                </div>
+
+                {% if shift %}
+                  <div style="font-size:12px; color:#6b7280; margin-top:6px;">
+                    Hours: <strong>{{ shift.total_hours }}</strong>
+                  </div>
+                {% endif %}
+              </td>
+            {% endwith %}
+          {% endwith %}
+        {% endwith %}
+      {% endfor %}
+    </tr>
+  {% endfor %}
+</tbody>
+          </table>
+        </div>
+<div class="card" style="margin-top:12px;">
+  <div class="form-group-inline">
+    <label style="display:flex; align-items:center; gap:8px; font-size:14px;">
+      <input type="checkbox" name="send_emails_after_save" value="1" class="form-checkbox">
+      Notify employees
+    </label>
+  </div>
+  <div style="font-size:12px; color:#6b7280; margin-top:6px;">
+    Check this to send shift emails after saving.
+  </div>
+</div>
+        <div class="sticky-action-bar">
+          
+         <button type="submit" class="btn btn-primary">Save Shifts</button>
+         <a href="{% url 'roster:week_summary' %}" class="btn btn-secondary">Go to Summary</a>
+         <a href="{% url 'payroll:summary' %}" class="btn btn-secondary">Payroll Page</a>
+         <a href="{% url 'analytics:summary' %}" class="btn btn-secondary">Analytics Page</a>
+</div>
+      {% else %}
+        <p>No active employees found. Please add employees first.</p>
+        <a href="{% url 'employees:add' %}" class="btn btn-primary">+ Add Employee</a>
+      {% endif %}
+    </div>
+  </form>
+{% endblock %}
