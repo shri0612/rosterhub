@@ -370,6 +370,7 @@ html, body {
   overflow-y: auto;
   overflow-x: hidden;
   flex-shrink: 0;
+  background: red;
 }
 
 .content {
