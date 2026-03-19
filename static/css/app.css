@@ -285,6 +285,7 @@ html, body {
   left: 0;
   background: #fff;
   z-index: 1;
+  
 }
 
 .table-scroll .table thead th:first-child {
@@ -438,6 +439,7 @@ html, body {
 .badge-risk-medium {
   background: #fef3c7;
   color: #92400e;
+  /*color: #92400e;*/
 }
 .badge-risk-high {
   background: #fee2e2;
